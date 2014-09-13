@@ -9,6 +9,7 @@
 import UIKit
 
 let LIGHT_GRAY = UIColor(white: 0.65, alpha: 1.0)
+let BG_GRAY = UIColor(white: 0.96, alpha: 1.0)
 
 class MoviesCollectionViewController: UIViewController, UICollectionViewDataSource {
 
@@ -20,7 +21,7 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        moviesCollectionView.backgroundColor = UIColor(white: 0.96, alpha: 1.0)
+        moviesCollectionView.backgroundColor = BG_GRAY
             
         loadRottenTomatoesData()
     }
@@ -121,6 +122,15 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
         cell.contentView.layer.borderWidth = 1.0
         
         return cell
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        
+        if segue.identifier == "detailsView" {
+            let detailsViewController: MovieDetailsViewController = segue.destinationViewController as MovieDetailsViewController
+            let indexPath = self.moviesCollectionView.indexPathsForSelectedItems()[0] as NSIndexPath
+            detailsViewController.movieDictionary = self.moviesArray![indexPath.row] as NSDictionary
+        }
     }
     
 }
