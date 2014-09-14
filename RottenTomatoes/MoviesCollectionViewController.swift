@@ -23,19 +23,17 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-        moviesCollectionView.backgroundColor = BG_GRAY
         self.view.backgroundColor = BG_GRAY
+        moviesCollectionView.backgroundColor = BG_GRAY
         
         moviesCollectionView.hidden = true
         progressControl.hidden = false
         progressControl.startAnimating()
         progressControl.color = UIColor.blueColor()
-        //progressControl.tintColor = UIApplication.sharedApplication().keyWindow.tintColor
         progressControl.frame = CGRectMake(self.view.frame.width/2-10, self.view.frame.height/2-10, 20, 20)
         self.view.addSubview(progressControl)
         
         loadRottenTomatoesData()
-        
         
         // Pull to refresh
         refreshControl.addTarget(self, action:"loadRottenTomatoesData", forControlEvents: UIControlEvents.ValueChanged)

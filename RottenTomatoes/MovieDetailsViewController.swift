@@ -13,13 +13,12 @@ class MovieDetailsViewController: UIViewController {
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var movieCardView: UIView!
     @IBOutlet weak var moviePosterImage: UIImageView!
-    
     @IBOutlet weak var movieNameLabel: UILabel!
     @IBOutlet weak var movieRatingLabel: UILabel!
-    
     @IBOutlet weak var movieSynopsisLabel: UILabel!
     
     
+    let GAP_FROM_TOP = CGFloat(400)
     
     var movieDictionary = NSDictionary()
     
@@ -28,14 +27,14 @@ class MovieDetailsViewController: UIViewController {
 
         scrollView.scrollEnabled = true
         scrollView.contentSize = CGSize(width: 320,height: 1000)
-        scrollView.backgroundColor = BG_GRAY
+        //scrollView.backgroundColor = BG_GRAY
         
-        movieCardView.layer.cornerRadius = 4.0
-        movieCardView.layer.masksToBounds = true;
-        movieCardView.backgroundColor = UIColor.whiteColor()
-        movieCardView.layer.borderColor = UIColor.whiteColor().CGColor
-        movieCardView.layer.borderWidth = 1.0
-        movieCardView.frame = CGRectMake(10,10,300,1000)
+        //movieCardView.layer.cornerRadius = 4.0
+        //movieCardView.layer.masksToBounds = true;
+        movieCardView.backgroundColor = UIColor(white: 0.0, alpha: 0.8)
+        //movieCardView.layer.borderColor = UIColor.whiteColor().CGColor
+        //movieCardView.layer.borderWidth = 1.0
+        movieCardView.frame = CGRectMake(0,GAP_FROM_TOP,320,1000)
                 
         let moviePosters = movieDictionary["posters"] as NSDictionary
         let small_thumbnailURL = moviePosters["thumbnail"] as String
@@ -54,9 +53,9 @@ class MovieDetailsViewController: UIViewController {
         /*moviePosterImage.setImageWithURLRequest(<#urlRequest: NSURLRequest!#>, placeholderImage: <#UIImage!#>, success: <#((NSURLRequest!, NSHTTPURLResponse!, UIImage!) -> Void)!##(NSURLRequest!, NSHTTPURLResponse!, UIImage!) -> Void#>, failure: <#((NSURLRequest!, NSHTTPURLResponse!, NSError!) -> Void)!##(NSURLRequest!, NSHTTPURLResponse!, NSError!) -> Void#>)*/
         
 
-        moviePosterImage.frame = CGRectMake(1,1,298,441)
+        moviePosterImage.frame = CGRectMake(0,0,320,568)
         
-        var h_offset = moviePosterImage.frame.origin.y + moviePosterImage.frame.height + 10
+        var h_offset = CGFloat(10.0)
         
         let movieTitle = movieDictionary["title"] as NSString
         let movieYear = movieDictionary["year"] as NSInteger
@@ -89,11 +88,15 @@ class MovieDetailsViewController: UIViewController {
         movieSynopsisLabel.numberOfLines = 0
         movieSynopsisLabel.sizeToFit()
         
-        movieCardView.frame = CGRectMake(10,10,movieCardView.frame.width,movieSynopsisLabel.frame.origin.y + movieSynopsisLabel.frame.height + 10)
-        moviePosterImage.frame = CGRectMake(1,1,298,441)
+        //movieCardView.frame = CGRectMake(10,10,movieCardView.frame.width,movieSynopsisLabel.frame.origin.y + movieSynopsisLabel.frame.height + 10)
 
+        var movieCardHeight = movieSynopsisLabel.frame.origin.y + movieSynopsisLabel.frame.height + 10
+        if  (movieCardHeight + GAP_FROM_TOP) < self.view.frame.height {
+            movieCardHeight = self.view.frame.height - GAP_FROM_TOP
+        }
         
-        //movieCardView.frame.size = CGSize(width: movieCardView.frame.width, height: movieSynopsisLabel.frame.origin.y + movieSynopsisLabel.frame.height + 10)
+        movieCardView.frame.size = CGSize(width: movieCardView.frame.width, height: movieCardHeight)
+        scrollView.contentSize = CGSize(width: movieCardView.frame.width, height: movieCardView.frame.height + GAP_FROM_TOP)
         
     }
 
