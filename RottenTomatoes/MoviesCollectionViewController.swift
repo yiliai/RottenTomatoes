@@ -10,6 +10,9 @@ import UIKit
 
 let LIGHT_GRAY = UIColor(white: 0.65, alpha: 1.0)
 let BG_GRAY = UIColor(white: 0.96, alpha: 1.0)
+let TOP_MOVIES_IN_THEATERS = "http://api.rottentomatoes.com/api/public/v1.0/lists/movies/in_theaters.json"
+let TOP_DVD = "http://api.rottentomatoes.com/api/public/v1.0/lists/dvds/top_rentals.json"
+let PAGE_LIMIT = 10
 
 class MoviesCollectionViewController: UIViewController, UICollectionViewDataSource {
     
@@ -18,6 +21,7 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
     let progressControl = UIActivityIndicatorView()
     let errorLabel = UILabel()
     let errorView = UIView()
+    var pagenumber = 1
     
     @IBOutlet weak var moviesCollectionView: UICollectionView!
     
@@ -67,6 +71,12 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
     }
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
+        // Load more if we're nearing the end of the list
+        if (indexPath.row > pagenumber*PAGE_LIMIT - 2) {
+            pagenumber += 1
+            loadRottenTomatoesData()
+        }
+        
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("movieCollectionCell", forIndexPath: indexPath) as MovieCollectionViewCell
         
         let movieDictionary = self.moviesArray![indexPath.row] as NSDictionary
@@ -111,7 +121,10 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
         var thumbnailURL = moviePosters["thumbnail"] as String
         thumbnailURL = thumbnailURL.stringByReplacingOccurrencesOfString("_tmb.jpg", withString: "_det.jpg", options: NSStringCompareOptions.LiteralSearch, range: nil)
         
-        cell.moviePosterImage.setImageWithURL(NSURL.URLWithString(thumbnailURL as NSString))
+        
+        fadeInImageFromURL(cell.moviePosterImage, url: NSURL.URLWithString(thumbnailURL as NSString))
+        
+        //cell.moviePosterImage.setImageWithURL(NSURL.URLWithString(thumbnailURL as NSString))
         
         cell.contentView.layer.cornerRadius = 4.0
         cell.contentView.layer.masksToBounds = true;
@@ -131,12 +144,12 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
         }
     }
     
-    func loadRottenTomatoesData() -> Bool {
+    func loadRottenTomatoesData() {
         let YourApiKey = "cvyj5jz6rkzkscxus99qwvay"
-        let RottenTomatoesURLString = "http://api.rottentomatoes.com/api/public/v1.0/lists/dvds/top_rentals.json?apikey=" + YourApiKey
+        let RottenTomatoesURLString = TOP_MOVIES_IN_THEATERS + "?apikey=" + YourApiKey + "&page_limit=" + String(PAGE_LIMIT) + "&page=" + String(pagenumber)
         let request = NSMutableURLRequest(URL: NSURL.URLWithString(RottenTomatoesURLString))
         
-        println("making the request")
+        println("making the request \(request)")
         self.hideErrorMessage()
         
         progressControl.hidden = false
@@ -156,9 +169,18 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
                 let parsedResult: AnyObject? = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: &errorValue)
                 if parsedResult != nil {
                     let dictionary = parsedResult! as NSDictionary
-                    self.moviesArray = dictionary["movies"] as? NSArray
+                    if let newArray = dictionary["movies"] as? NSArray {
+                        if (self.moviesArray == nil) {
+                            self.moviesArray = newArray
+                        }
+                        else {
+                            self.moviesArray = self.moviesArray?.arrayByAddingObjectsFromArray(newArray)
+                        }
+                    }
                     self.moviesCollectionView.reloadData()
+                    
                     println("done loading data")
+                    println(self.moviesArray?.count)
                 }
             }
 
@@ -167,8 +189,6 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
             // Removing the progress control from the view so that when you pull to refresh, there aren't 2 spinners.
             self.progressControl.removeFromSuperview()
         })
-        
-        return true
     }
     
     func showErrorMessage(message: String, fullscreen: Bool) {
@@ -198,7 +218,19 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
     }
     
     func hideErrorMessage() {
-
         errorView.hidden = true
+    }
+    
+    func fadeInImageFromURL(imageView :UIImageView, url: NSURL) {
+      
+        imageView.alpha = 0.0
+        let request = NSURLRequest(URL: url)
+        
+        imageView.setImageWithURLRequest(request, placeholderImage: nil, success: { (request, response, image) -> Void in
+            imageView.image = image
+            UIView.animateWithDuration(0.4, animations: { () -> Void in
+                imageView.alpha = 1.0
+            })
+            }, failure: nil)
     }
 }

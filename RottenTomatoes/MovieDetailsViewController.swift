@@ -24,7 +24,9 @@ class MovieDetailsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        self.navigationItem.title = movieDictionary["title"] as NSString
+        
         scrollView.scrollEnabled = true
         scrollView.contentSize = CGSize(width: 320,height: 1000)
         
@@ -36,16 +38,17 @@ class MovieDetailsViewController: UIViewController {
     
         let thumbnailURL = small_thumbnailURL.stringByReplacingOccurrencesOfString("_tmb.jpg", withString: "_ori.jpg", options: NSStringCompareOptions.LiteralSearch, range: nil)
         
-        moviePosterImage.setImageWithURL(NSURL.URLWithString(thumbnailURL as NSString))
-        //let request = NSURLRequest(URL: NSURL.URLWithString(small_thumbnailURL as NSString))
-        
-        /*moviePosterImage.setImageWithURLRequest(request),
-            placeholderImage: nil,
-            success: nil,
-            failure: nil)
-        */
-        
-        /*moviePosterImage.setImageWithURLRequest(<#urlRequest: NSURLRequest!#>, placeholderImage: <#UIImage!#>, success: <#((NSURLRequest!, NSHTTPURLResponse!, UIImage!) -> Void)!##(NSURLRequest!, NSHTTPURLResponse!, UIImage!) -> Void#>, failure: <#((NSURLRequest!, NSHTTPURLResponse!, NSError!) -> Void)!##(NSURLRequest!, NSHTTPURLResponse!, NSError!) -> Void#>)*/
+        //moviePosterImage.setImageWithURL(NSURL.URLWithString(thumbnailURL as NSString))
+        let request = NSURLRequest(URL: NSURL.URLWithString(small_thumbnailURL as NSString))
+
+        moviePosterImage.alpha = 0.0
+        moviePosterImage.setImageWithURLRequest(request, placeholderImage: nil, success: { (request, response, image) -> Void in
+            UIView.animateWithDuration(0.4, animations: { () -> Void in
+                self.moviePosterImage.image = image
+                self.moviePosterImage.alpha = 1.0
+            })
+            self.moviePosterImage.setImageWithURL(NSURL.URLWithString(thumbnailURL))
+        }, failure: nil)
         
 
         moviePosterImage.frame = CGRectMake(0,0,320,568)
