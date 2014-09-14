@@ -21,7 +21,6 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
     let progressControl = UIActivityIndicatorView()
     let errorLabel = UILabel()
     let errorView = UIView()
-    var pagenumber = 1
     
     @IBOutlet weak var moviesCollectionView: UICollectionView!
     
@@ -72,8 +71,7 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
         // Load more if we're nearing the end of the list
-        if (indexPath.row > pagenumber*PAGE_LIMIT - 2) {
-            pagenumber += 1
+        if (indexPath.row > collectionView.numberOfItemsInSection(0) - 2) {
             loadRottenTomatoesData()
         }
         
@@ -121,10 +119,7 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
         var thumbnailURL = moviePosters["thumbnail"] as String
         thumbnailURL = thumbnailURL.stringByReplacingOccurrencesOfString("_tmb.jpg", withString: "_det.jpg", options: NSStringCompareOptions.LiteralSearch, range: nil)
         
-        
         fadeInImageFromURL(cell.moviePosterImage, url: NSURL.URLWithString(thumbnailURL as NSString))
-        
-        //cell.moviePosterImage.setImageWithURL(NSURL.URLWithString(thumbnailURL as NSString))
         
         cell.contentView.layer.cornerRadius = 4.0
         cell.contentView.layer.masksToBounds = true;
@@ -146,7 +141,14 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
     
     func loadRottenTomatoesData() {
         let YourApiKey = "cvyj5jz6rkzkscxus99qwvay"
-        let RottenTomatoesURLString = TOP_MOVIES_IN_THEATERS + "?apikey=" + YourApiKey + "&page_limit=" + String(PAGE_LIMIT) + "&page=" + String(pagenumber)
+    
+        // Calculate the next page number
+        var page = 1
+        if (moviesArray != nil) {
+            page = moviesArray!.count/PAGE_LIMIT + 1
+        }
+        
+        let RottenTomatoesURLString = TOP_MOVIES_IN_THEATERS + "?apikey=" + YourApiKey + "&page_limit=" + String(PAGE_LIMIT) + "&page=" + String(page)
         let request = NSMutableURLRequest(URL: NSURL.URLWithString(RottenTomatoesURLString))
         
         println("making the request \(request)")
@@ -223,10 +225,15 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
     
     func fadeInImageFromURL(imageView :UIImageView, url: NSURL) {
       
-        imageView.alpha = 0.0
         let request = NSURLRequest(URL: url)
         
         imageView.setImageWithURLRequest(request, placeholderImage: nil, success: { (request, response, image) -> Void in
+            
+            if (response == nil) {
+                imageView.image = image
+                return
+            }
+            imageView.alpha = 0.0
             imageView.image = image
             UIView.animateWithDuration(0.4, animations: { () -> Void in
                 imageView.alpha = 1.0
