@@ -16,6 +16,8 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
     var moviesArray :NSArray?
     let refreshControl = UIRefreshControl()
     let progressControl = UIActivityIndicatorView()
+    let errorLabel = UILabel()
+    let errorView = UIView()
     
     @IBOutlet weak var moviesCollectionView: UICollectionView!
     
@@ -25,21 +27,23 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
         // Do any additional setup after loading the view.
         self.view.backgroundColor = BG_GRAY
         moviesCollectionView.backgroundColor = BG_GRAY
-        
-        moviesCollectionView.hidden = true
-        progressControl.hidden = false
-        progressControl.startAnimating()
-        progressControl.color = UIColor.blueColor()
-        progressControl.frame = CGRectMake(self.view.frame.width/2-10, self.view.frame.height/2-10, 20, 20)
+        moviesCollectionView.alwaysBounceVertical = true;
         self.view.addSubview(progressControl)
         
+        // Initialize the error messages
+        errorView.addSubview(errorLabel)
+        self.view.addSubview(errorView)
+        errorView.hidden = true
+
         loadRottenTomatoesData()
         
         // Pull to refresh
         refreshControl.addTarget(self, action:"loadRottenTomatoesData", forControlEvents: UIControlEvents.ValueChanged)
         self.moviesCollectionView.addSubview(refreshControl)
         
+        
     }
+    
     
     func collectionView(collectionView: UICollectionView!, numberOfItemsInSection section: Int) -> Int {
         if (moviesArray != nil) {
@@ -59,7 +63,7 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 1
+        return 0
     }
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
@@ -133,13 +137,19 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
         let request = NSMutableURLRequest(URL: NSURL.URLWithString(RottenTomatoesURLString))
         
         println("making the request")
+        self.hideErrorMessage()
         
+        progressControl.hidden = false
+        progressControl.startAnimating()
+        progressControl.color = UIColor.blueColor()
+        progressControl.frame = CGRectMake(self.view.frame.width/2-10, self.view.frame.height/2-10, 20, 20)
+
         NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler:{ (response, data, error) in
             
             if (error != nil) {
                 let errorInfo = error.userInfo! as NSDictionary
                 let errorMessage = errorInfo["NSLocalizedDescription"] as NSString
-                self.showErrorMessage(errorMessage, fullscreen: self.moviesCollectionView.hidden)
+                self.showErrorMessage(errorMessage, fullscreen: self.moviesCollectionView.numberOfItemsInSection(0)==0)
             }
             if (data != nil) {
                 var errorValue: NSError? = nil
@@ -153,8 +163,9 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
             }
 
             self.refreshControl.endRefreshing()
-            self.moviesCollectionView.hidden = false
             self.progressControl.hidden = true
+            // Removing the progress control from the view so that when you pull to refresh, there aren't 2 spinners.
+            self.progressControl.removeFromSuperview()
         })
         
         return true
@@ -162,8 +173,6 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
     
     func showErrorMessage(message: String, fullscreen: Bool) {
 
-        let errorLabel = UILabel()
-        let errorView = UIView()
         errorLabel.text = message
         errorLabel.font = UIFont(name: "Avenir Next", size: 14.0)
         errorLabel.numberOfLines = 0
@@ -185,8 +194,11 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
             errorView.layer.shadowColor = UIColor.darkGrayColor().CGColor
             errorView.layer.shadowOpacity = 1.0
         }
-        
-        errorView.addSubview(errorLabel)
-        self.view.addSubview(errorView)
+        errorView.hidden = false
+    }
+    
+    func hideErrorMessage() {
+
+        errorView.hidden = true
     }
 }

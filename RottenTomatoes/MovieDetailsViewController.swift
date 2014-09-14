@@ -27,13 +27,8 @@ class MovieDetailsViewController: UIViewController {
 
         scrollView.scrollEnabled = true
         scrollView.contentSize = CGSize(width: 320,height: 1000)
-        //scrollView.backgroundColor = BG_GRAY
         
-        //movieCardView.layer.cornerRadius = 4.0
-        //movieCardView.layer.masksToBounds = true;
         movieCardView.backgroundColor = UIColor(white: 0.0, alpha: 0.8)
-        //movieCardView.layer.borderColor = UIColor.whiteColor().CGColor
-        //movieCardView.layer.borderWidth = 1.0
         movieCardView.frame = CGRectMake(0,GAP_FROM_TOP,320,1000)
                 
         let moviePosters = movieDictionary["posters"] as NSDictionary
@@ -88,12 +83,7 @@ class MovieDetailsViewController: UIViewController {
         movieSynopsisLabel.numberOfLines = 0
         movieSynopsisLabel.sizeToFit()
         
-        //movieCardView.frame = CGRectMake(10,10,movieCardView.frame.width,movieSynopsisLabel.frame.origin.y + movieSynopsisLabel.frame.height + 10)
-
-        var movieCardHeight = movieSynopsisLabel.frame.origin.y + movieSynopsisLabel.frame.height + 10
-        if  (movieCardHeight + GAP_FROM_TOP) < self.view.frame.height {
-            movieCardHeight = self.view.frame.height - GAP_FROM_TOP
-        }
+        let movieCardHeight = max(movieSynopsisLabel.frame.origin.y + movieSynopsisLabel.frame.height + 10, self.view.frame.height - GAP_FROM_TOP)
         
         movieCardView.frame.size = CGSize(width: movieCardView.frame.width, height: movieCardHeight)
         scrollView.contentSize = CGSize(width: movieCardView.frame.width, height: movieCardView.frame.height + GAP_FROM_TOP)
