@@ -12,20 +12,37 @@ let LIGHT_GRAY = UIColor(white: 0.65, alpha: 1.0)
 let BG_GRAY = UIColor(white: 0.96, alpha: 1.0)
 
 class MoviesCollectionViewController: UIViewController, UICollectionViewDataSource {
-
+    
     var moviesArray :NSArray?
+    let refreshControl = UIRefreshControl()
+    let progressControl = UIActivityIndicatorView()
     
     @IBOutlet weak var moviesCollectionView: UICollectionView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // Do any additional setup after loading the view.
         moviesCollectionView.backgroundColor = BG_GRAY
-            
+        self.view.backgroundColor = BG_GRAY
+        
+        moviesCollectionView.hidden = true
+        progressControl.hidden = false
+        progressControl.startAnimating()
+        progressControl.color = UIColor.blueColor()
+        //progressControl.tintColor = UIApplication.sharedApplication().keyWindow.tintColor
+        progressControl.frame = CGRectMake(self.view.frame.width/2-10, self.view.frame.height/2-10, 20, 20)
+        self.view.addSubview(progressControl)
+        
         loadRottenTomatoesData()
+        
+        
+        // Pull to refresh
+        refreshControl.addTarget(self, action:"loadRottenTomatoesData", forControlEvents: UIControlEvents.ValueChanged)
+        self.moviesCollectionView.addSubview(refreshControl)
+        
     }
-
+    
     func collectionView(collectionView: UICollectionView!, numberOfItemsInSection section: Int) -> Int {
         if (moviesArray != nil) {
             return moviesArray!.count
@@ -35,25 +52,6 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
         }
     }
     
-    func loadRottenTomatoesData() {
-        let YourApiKey = "cvyj5jz6rkzkscxus99qwvay"
-        let RottenTomatoesURLString = "http://api.rottentomatoes.com/api/public/v1.0/lists/dvds/top_rentals.json?apikey=" + YourApiKey
-        let request = NSMutableURLRequest(URL: NSURL.URLWithString(RottenTomatoesURLString))
-        
-        println("making the request")
-        NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler:{ (response, data, error) in
-            println("\(error)")
-            var errorValue: NSError? = nil
-            let parsedResult: AnyObject? = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: &errorValue)
-            if parsedResult != nil {
-                let dictionary = parsedResult! as NSDictionary
-                self.moviesArray = dictionary["movies"] as? NSArray
-                self.moviesCollectionView.reloadData()
-                println("done loading data")
-            }
-        })
-    }
-    
     func collectionView(collectionView: UICollectionView!, layout collectionViewLayout: UICollectionViewLayout!, sizeForItemAtIndexPath indexPath: NSIndexPath!) -> CGSize {
         return CGSizeMake(145.0, 270.0)
     }
@@ -61,7 +59,7 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
     func collectionView(collectionView: UICollectionView!, layout collectionViewLayout: UICollectionViewLayout!, insetForSectionAtIndex section: Int) -> UIEdgeInsets {
         return UIEdgeInsetsMake(10, 10, 10, 10);
     }
-
+    
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 1
     }
@@ -101,13 +99,11 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
         var x_offset = cell.movieRuntimeLabel.frame.origin.x + cell.movieRuntimeLabel.frame.width + 10
         cell.ratingImage.frame = CGRectMake(x_offset,h_offset-2,15,15)
         x_offset += cell.ratingImage.frame.width + 2
-
+        
         cell.ratingLabel.text = "\(String(critics_score))%"
         cell.ratingLabel.textColor = LIGHT_GRAY
         cell.ratingLabel.frame = CGRectMake(x_offset,h_offset,128,40)
         cell.ratingLabel.sizeToFit()
-        
-        
         
         let moviePosters = movieDictionary["posters"] as NSDictionary
         var thumbnailURL = moviePosters["thumbnail"] as String
@@ -133,4 +129,66 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
         }
     }
     
+    func loadRottenTomatoesData() -> Bool {
+        let YourApiKey = "cvyj5jz6rkzkscxus99qwvay"
+        let RottenTomatoesURLString = "http://api.rottentomatoes.com/api/public/v1.0/lists/dvds/top_rentals.json?apikey=" + YourApiKey
+        let request = NSMutableURLRequest(URL: NSURL.URLWithString(RottenTomatoesURLString))
+        
+        println("making the request")
+        
+        NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler:{ (response, data, error) in
+            
+            if (error != nil) {
+                let errorInfo = error.userInfo! as NSDictionary
+                let errorMessage = errorInfo["NSLocalizedDescription"] as NSString
+                self.showErrorMessage(errorMessage, fullscreen: self.moviesCollectionView.hidden)
+            }
+            if (data != nil) {
+                var errorValue: NSError? = nil
+                let parsedResult: AnyObject? = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: &errorValue)
+                if parsedResult != nil {
+                    let dictionary = parsedResult! as NSDictionary
+                    self.moviesArray = dictionary["movies"] as? NSArray
+                    self.moviesCollectionView.reloadData()
+                    println("done loading data")
+                }
+            }
+
+            self.refreshControl.endRefreshing()
+            self.moviesCollectionView.hidden = false
+            self.progressControl.hidden = true
+        })
+        
+        return true
+    }
+    
+    func showErrorMessage(message: String, fullscreen: Bool) {
+
+        let errorLabel = UILabel()
+        let errorView = UIView()
+        errorLabel.text = message
+        errorLabel.font = UIFont(name: "Avenir Next", size: 14.0)
+        errorLabel.numberOfLines = 0
+
+        if (fullscreen) {
+            errorLabel.textColor = UIColor.blackColor()
+            errorLabel.textAlignment = NSTextAlignment.Center
+            errorLabel.frame = CGRectMake(50, self.view.frame.height/2, 220, 568)
+            errorLabel.sizeToFit()
+        }
+        else {
+            errorLabel.frame = CGRectMake(10, 10, 300, 100)
+            errorLabel.textColor = UIColor.whiteColor()
+            errorLabel.sizeToFit()
+
+            errorView.layer.backgroundColor = UIColor.darkGrayColor().CGColor
+            errorView.frame = CGRectMake(0, 64, self.view.frame.width, errorLabel.frame.height+20)
+            errorView.layer.shadowRadius = 5.0
+            errorView.layer.shadowColor = UIColor.darkGrayColor().CGColor
+            errorView.layer.shadowOpacity = 1.0
+        }
+        
+        errorView.addSubview(errorLabel)
+        self.view.addSubview(errorView)
+    }
 }

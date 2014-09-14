@@ -38,10 +38,22 @@ class MovieDetailsViewController: UIViewController {
         movieCardView.frame = CGRectMake(10,10,300,1000)
                 
         let moviePosters = movieDictionary["posters"] as NSDictionary
-        var thumbnailURL = moviePosters["thumbnail"] as String
-        thumbnailURL = thumbnailURL.stringByReplacingOccurrencesOfString("_tmb.jpg", withString: "_ori.jpg", options: NSStringCompareOptions.LiteralSearch, range: nil)
+        let small_thumbnailURL = moviePosters["thumbnail"] as String
+    
+        let thumbnailURL = small_thumbnailURL.stringByReplacingOccurrencesOfString("_tmb.jpg", withString: "_ori.jpg", options: NSStringCompareOptions.LiteralSearch, range: nil)
         
         moviePosterImage.setImageWithURL(NSURL.URLWithString(thumbnailURL as NSString))
+        //let request = NSURLRequest(URL: NSURL.URLWithString(small_thumbnailURL as NSString))
+        
+        /*moviePosterImage.setImageWithURLRequest(request),
+            placeholderImage: nil,
+            success: nil,
+            failure: nil)
+        */
+        
+        /*moviePosterImage.setImageWithURLRequest(<#urlRequest: NSURLRequest!#>, placeholderImage: <#UIImage!#>, success: <#((NSURLRequest!, NSHTTPURLResponse!, UIImage!) -> Void)!##(NSURLRequest!, NSHTTPURLResponse!, UIImage!) -> Void#>, failure: <#((NSURLRequest!, NSHTTPURLResponse!, NSError!) -> Void)!##(NSURLRequest!, NSHTTPURLResponse!, NSError!) -> Void#>)*/
+        
+
         moviePosterImage.frame = CGRectMake(1,1,298,441)
         
         var h_offset = moviePosterImage.frame.origin.y + moviePosterImage.frame.height + 10
