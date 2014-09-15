@@ -166,9 +166,11 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="FzA-bv-Wlk" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Now Playing" image="movies" id="rnP-IX-aab"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Qxk-1S-UWV">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="Qxk-1S-UWV">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="barTintColor" red="1" green="0.50196081400000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
@@ -185,9 +187,11 @@
                 <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="67U-2o-6aH" customClass="TabBarViewController" customModule="RottenTomatoes" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
                     <nil key="simulatedBottomBarMetrics"/>
-                    <tabBar key="tabBar" contentMode="scaleToFill" id="bbn-Vz-aay">
+                    <tabBar key="tabBar" contentMode="scaleToFill" barStyle="black" itemPositioning="centered" id="bbn-Vz-aay">
                         <autoresizingMask key="autoresizingMask"/>
-                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="tintColor" red="1" green="0.50196081400000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="selectedImageTintColor" red="1" green="0.50196081400000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     </tabBar>
                     <connections>
                         <segue destination="FzA-bv-Wlk" kind="relationship" relationship="viewControllers" id="qUE-vc-Clk"/>

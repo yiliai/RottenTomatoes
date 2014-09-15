@@ -27,6 +27,10 @@ class TabBarViewController: UITabBarController, UITabBarControllerDelegate {
         
         navViewController.addChildViewController(dvdCollectionViewController)
         
+        self.tabBar.barTintColor = UIColor.orangeColor()
+        self.tabBar.tintColor = UIColor.whiteColor()
+        self.tabBar.barStyle = UIBarStyle.Black
+        
         // Do any additional setup after loading the view.
     }
 
