@@ -19,6 +19,9 @@ class TabBarViewController: UITabBarController, UITabBarControllerDelegate {
         let navViewController = UINavigationController()
         self.addChildViewController(navViewController)
         navViewController.tabBarItem = UITabBarItem(title: "DVD", image: UIImage(named: "dvd"), selectedImage: UIImage(named: "dvd"))
+        navViewController.navigationBar.barStyle = UIBarStyle.Black
+        navViewController.navigationBar.barTintColor = UIColor.orangeColor()
+        navViewController.navigationBar.tintColor = UIColor.whiteColor()
         
         println("adding new controller")
         let dvdCollectionViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("collectionView") as MoviesCollectionViewController
@@ -30,6 +33,10 @@ class TabBarViewController: UITabBarController, UITabBarControllerDelegate {
         self.tabBar.barTintColor = UIColor.orangeColor()
         self.tabBar.tintColor = UIColor.whiteColor()
         self.tabBar.barStyle = UIBarStyle.Black
+        
+        for navController in self.childViewControllers as [UINavigationController] {
+            navController.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont(name: "Avenir Next-Medium", size: 16)]
+        }
         
         // Do any additional setup after loading the view.
     }
