@@ -1,27 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6245" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="FzA-bv-Wlk">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6245" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="67U-2o-6aH">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
-        <scene sceneID="6uC-Xq-mKm">
-            <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="gZo-ay-Sx6" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <viewController id="QgN-ji-anC" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="4Cg-kI-7yk">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                </viewController>
-            </objects>
-            <point key="canvasLocation" x="1596" y="-409"/>
-        </scene>
-        <!--Movies Collection View Controller-->
+        <!--Top Movies-->
         <scene sceneID="i1U-By-4iE">
             <objects>
-                <viewController id="Uy8-mG-jek" customClass="MoviesCollectionViewController" customModule="RottenTomatoes" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="collectionView" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Uy8-mG-jek" customClass="MoviesCollectionViewController" customModule="RottenTomatoes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="7Ah-Ha-3pZ">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -100,16 +86,14 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" id="eUV-4t-PWV">
-                        <nil key="title"/>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Top Movies" id="eUV-4t-PWV"/>
                     <connections>
                         <outlet property="moviesCollectionView" destination="uwR-EJ-aXX" id="L6Y-fd-VRT"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uys-sN-eMW" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="813" y="116"/>
+            <point key="canvasLocation" x="1345" y="116"/>
         </scene>
         <!--Movie Details View Controller-->
         <scene sceneID="EcE-ho-2Xw">
@@ -173,12 +157,13 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5rK-uc-Wjy" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1214" y="116"/>
+            <point key="canvasLocation" x="1746" y="116"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Now Playing-->
         <scene sceneID="ONl-vJ-Oj5">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="FzA-bv-Wlk" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Now Playing" image="movies" id="rnP-IX-aab"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Qxk-1S-UWV">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -191,22 +176,30 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="PmT-eH-ptX" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="886" y="116"/>
+        </scene>
+        <!--Tab Bar View Controller-->
+        <scene sceneID="uCT-dv-FT7">
+            <objects>
+                <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="67U-2o-6aH" customClass="TabBarViewController" customModule="RottenTomatoes" customModuleProvider="target" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <nil key="simulatedBottomBarMetrics"/>
+                    <tabBar key="tabBar" contentMode="scaleToFill" id="bbn-Vz-aay">
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    </tabBar>
+                    <connections>
+                        <segue destination="FzA-bv-Wlk" kind="relationship" relationship="viewControllers" id="qUE-vc-Clk"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2dN-YW-hWt" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
             <point key="canvasLocation" x="354" y="116"/>
         </scene>
-        <!--View Controller-->
-        <scene sceneID="out-mJ-bK9">
-            <objects>
-                <viewController id="2jv-QP-C53" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="Y2K-i9-Sob">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="YbA-Ym-deA" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-        </scene>
     </scenes>
+    <resources>
+        <image name="movies" width="30" height="30"/>
+    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

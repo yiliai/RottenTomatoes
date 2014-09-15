@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3A85B09819C192A100055979 /* DummyObjectiveC.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A85B09719C192A100055979 /* DummyObjectiveC.m */; };
+		3AAB6F3919C6A23B007F7AF2 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AAB6F3819C6A23B007F7AF2 /* TabBarViewController.swift */; };
 		3AB1645519C146170018B700 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB1645419C146170018B700 /* AppDelegate.swift */; };
 		3AB1645A19C146170018B700 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3AB1645819C146170018B700 /* Main.storyboard */; };
 		3AB1645C19C146170018B700 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3AB1645B19C146170018B700 /* Images.xcassets */; };
@@ -32,6 +33,7 @@
 /* Begin PBXFileReference section */
 		3A85B09619C192A000055979 /* RottenTomatoes-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RottenTomatoes-Bridging-Header.h"; sourceTree = "<group>"; };
 		3A85B09719C192A100055979 /* DummyObjectiveC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DummyObjectiveC.m; sourceTree = "<group>"; };
+		3AAB6F3819C6A23B007F7AF2 /* TabBarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
 		3AB1644F19C146170018B700 /* RottenTomatoes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RottenTomatoes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3AB1645319C146170018B700 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3AB1645419C146170018B700 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -100,6 +102,7 @@
 			children = (
 				3AB1645419C146170018B700 /* AppDelegate.swift */,
 				3ABB511C19C2C04E00822648 /* MoviesCollectionViewController.swift */,
+				3AAB6F3819C6A23B007F7AF2 /* TabBarViewController.swift */,
 				3ABB514B19C2C79000822648 /* MovieCollectionViewCell.swift */,
 				3ABB511819C2B7EE00822648 /* MovieDetailsViewController.swift */,
 				3AB1645819C146170018B700 /* Main.storyboard */,
@@ -276,6 +279,7 @@
 				3AB1645519C146170018B700 /* AppDelegate.swift in Sources */,
 				3ABB511D19C2C04E00822648 /* MoviesCollectionViewController.swift in Sources */,
 				3ABB514C19C2C79000822648 /* MovieCollectionViewCell.swift in Sources */,
+				3AAB6F3919C6A23B007F7AF2 /* TabBarViewController.swift in Sources */,
 				3A85B09819C192A100055979 /* DummyObjectiveC.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

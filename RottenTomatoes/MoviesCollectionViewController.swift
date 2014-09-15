@@ -11,11 +11,11 @@ import UIKit
 let LIGHT_GRAY = UIColor(white: 0.65, alpha: 1.0)
 let BG_GRAY = UIColor(white: 0.96, alpha: 1.0)
 let TOP_MOVIES_IN_THEATERS = "http://api.rottentomatoes.com/api/public/v1.0/lists/movies/in_theaters.json"
-let TOP_DVD = "http://api.rottentomatoes.com/api/public/v1.0/lists/dvds/top_rentals.json"
+let TOP_DVD = "http://api.rottentomatoes.com/api/public/v1.0/lists/dvds/current_releases.json"
 let PAGE_LIMIT = 10
 
 class MoviesCollectionViewController: UIViewController, UICollectionViewDataSource, UITextFieldDelegate {
-    
+
     var moviesArray :NSArray?
     var movieSearchResultsArray :NSArray?
     let refreshControl = UIRefreshControl()
@@ -24,6 +24,9 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
     let errorView = UIView()
     let searchBarView = UIView()
     let searchField = UITextField()
+    // Query is by default top movies
+    var query = TOP_MOVIES_IN_THEATERS
+    var endOfList = false
     
     @IBOutlet weak var moviesCollectionView: UICollectionView!
     
@@ -81,7 +84,7 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
         // Load more if we're nearing the end of the list, unless it's displaying search results
-        if ((indexPath.row > collectionView.numberOfItemsInSection(0) - 2) && movieSearchResultsArray == nil) {
+        if (!endOfList && (indexPath.row > collectionView.numberOfItemsInSection(0) - 2) && movieSearchResultsArray == nil) {
             loadRottenTomatoesData(fetchMore: true)
         }
         
@@ -171,7 +174,7 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
             page = page + 1
         }
         
-        let RottenTomatoesURLString = TOP_MOVIES_IN_THEATERS + "?apikey=" + YourApiKey + "&page_limit=" + String(PAGE_LIMIT) + "&page=" + String(page)
+        let RottenTomatoesURLString = self.query + "?apikey=" + YourApiKey + "&page_limit=" + String(PAGE_LIMIT) + "&page=" + String(page)
         let request = NSMutableURLRequest(URL: NSURL.URLWithString(RottenTomatoesURLString))
         
         println("making the request")
@@ -179,7 +182,8 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
         
         progressControl.hidden = false
         progressControl.startAnimating()
-        progressControl.color = UIColor.blueColor()
+        progressControl.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.WhiteLarge
+        progressControl.color = UIColor.lightGrayColor()
         progressControl.frame = CGRectMake(self.view.frame.width/2-10, self.view.frame.height/2-10, 20, 20)
         
         NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler:{ (response, data, error) in
@@ -195,6 +199,9 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
                 if parsedResult != nil {
                     let dictionary = parsedResult! as NSDictionary
                     if let newArray = dictionary["movies"] as? NSArray {
+                        if newArray.count < PAGE_LIMIT {
+                            self.endOfList = true
+                        }
                         if (self.moviesArray == nil || !fetchMore) {
                             self.moviesArray = newArray
                         }
