@@ -15,6 +15,7 @@
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="uwR-EJ-aXX">
                                 <rect key="frame" x="0.0" y="50" width="320" height="518"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <gestureRecognizers/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="aJ0-FZ-d5D">
                                     <size key="itemSize" width="155" height="280"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -198,7 +199,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="movies" width="30" height="30"/>
+        <image name="movies" width="25" height="25"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>

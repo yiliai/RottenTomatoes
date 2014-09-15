@@ -62,6 +62,9 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
         // Pull to refresh
         refreshControl.addTarget(self, action:"refresh", forControlEvents: UIControlEvents.ValueChanged)
         self.moviesCollectionView.addSubview(refreshControl)
+        
+        // Special handling of the collection view's pan gesture recognizer
+        self.moviesCollectionView.panGestureRecognizer.addTarget(self, action:"onPan")
     }
     
     func collectionView(collectionView: UICollectionView!, numberOfItemsInSection section: Int) -> Int {
@@ -181,7 +184,32 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
             detailsViewController.hidesBottomBarWhenPushed = true
         }
     }
-    
+
+    func onPan() {
+        let scrollVelocity :CGPoint = moviesCollectionView.panGestureRecognizer.velocityInView(moviesCollectionView.superview)
+        if let tabBar = self.tabBarController?.tabBar {
+            
+            // Show Tab Bar if scrolling back up
+            if (scrollVelocity.y > 0.0) {
+                if tabBar.frame.origin.y == self.view.frame.height-tabBar.frame.height {
+                    return
+                }
+                UIView.animateWithDuration(0.4, animations: { () -> Void in
+                    tabBar.frame = CGRectMake(tabBar.frame.origin.x, self.view.frame.height-tabBar.frame.height, tabBar.frame.width, tabBar.frame.height)
+                })
+            }
+            // Hide Tab Bar if scrolling down
+            else if (scrollVelocity.y < 0.0) {
+                if tabBar.frame.origin.y == self.view.frame.height {
+                    return
+                }
+                UIView.animateWithDuration(0.4, animations: { () -> Void in
+                    tabBar.frame = CGRectMake(tabBar.frame.origin.x, self.view.frame.height, tabBar.frame.width, tabBar.frame.height)
+                })
+            }
+        }
+    }
+
     func refresh() {
         loadRottenTomatoesData(fetchMore: false)
     }

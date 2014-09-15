@@ -26,8 +26,6 @@ class MovieDetailsViewController: UIViewController {
         super.viewDidLoad()
         
         self.navigationItem.title = movieDictionary["title"] as NSString
-        //self.navigationController?.navigationBar.backgroundColor = UIColor(red: 255, green: 0, blue: 0, alpha: 0.5)
-        //self.navigationController?.navigationBar.translucent = true
         
         scrollView.scrollEnabled = true
         scrollView.contentSize = CGSize(width: self.view.frame.width, height: self.view.frame.height)
