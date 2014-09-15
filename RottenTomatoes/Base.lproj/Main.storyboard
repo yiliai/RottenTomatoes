@@ -4,6 +4,20 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
     </dependencies>
     <scenes>
+        <!--View Controller-->
+        <scene sceneID="6uC-Xq-mKm">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="gZo-ay-Sx6" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <viewController id="QgN-ji-anC" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="4Cg-kI-7yk">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+            </objects>
+            <point key="canvasLocation" x="1596" y="-409"/>
+        </scene>
         <!--Movies Collection View Controller-->
         <scene sceneID="i1U-By-4iE">
             <objects>
@@ -13,7 +27,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="uwR-EJ-aXX">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                                <rect key="frame" x="0.0" y="50" width="320" height="518"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="aJ0-FZ-d5D">
                                     <size key="itemSize" width="155" height="280"/>
@@ -88,15 +102,9 @@
                     </view>
                     <navigationItem key="navigationItem" id="eUV-4t-PWV">
                         <nil key="title"/>
-                        <barButtonItem key="rightBarButtonItem" systemItem="search" id="GHd-JN-GOY">
-                            <connections>
-                                <action selector="tapSearch:" destination="Uy8-mG-jek" id="9S8-AS-Y3e"/>
-                            </connections>
-                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="moviesCollectionView" destination="uwR-EJ-aXX" id="L6Y-fd-VRT"/>
-                        <outlet property="searchButton" destination="GHd-JN-GOY" id="aZ4-pN-p11"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uys-sN-eMW" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -184,6 +192,19 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="PmT-eH-ptX" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="354" y="116"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="out-mJ-bK9">
+            <objects>
+                <viewController id="2jv-QP-C53" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Y2K-i9-Sob">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="YbA-Ym-deA" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
         </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

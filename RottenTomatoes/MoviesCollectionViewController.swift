@@ -17,16 +17,15 @@ let PAGE_LIMIT = 10
 class MoviesCollectionViewController: UIViewController, UICollectionViewDataSource, UITextFieldDelegate {
     
     var moviesArray :NSArray?
+    var movieSearchResultsArray :NSArray?
     let refreshControl = UIRefreshControl()
     let progressControl = UIActivityIndicatorView()
     let errorLabel = UILabel()
     let errorView = UIView()
-    let searchView = UIView()
     let searchBarView = UIView()
     let searchField = UITextField()
     
     @IBOutlet weak var moviesCollectionView: UICollectionView!
-    @IBOutlet weak var searchButton: UIBarButtonItem!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,29 +40,30 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
         errorView.addSubview(errorLabel)
         self.view.addSubview(errorView)
         errorView.hidden = true
-
+        
         // Initialize the search field
         searchBarView.addSubview(searchField)
-        searchView.addSubview(searchBarView)
-        self.view.addSubview(searchView)
-        searchView.hidden = true
+        self.view.addSubview(searchBarView)
+        searchField.addTarget(self, action: "performSearch", forControlEvents: UIControlEvents.EditingChanged)
+        showSearchField()
         
+        // Load data from Rotten Tomatoes
         loadRottenTomatoesData()
         
         // Pull to refresh
-        refreshControl.addTarget(self, action:"loadRottenTomatoesData", forControlEvents: UIControlEvents.ValueChanged)
+        refreshControl.addTarget(self, action:"refresh", forControlEvents: UIControlEvents.ValueChanged)
         self.moviesCollectionView.addSubview(refreshControl)
-        
-        
     }
     
-    
     func collectionView(collectionView: UICollectionView!, numberOfItemsInSection section: Int) -> Int {
-        if (moviesArray != nil) {
+        if (moviesArray == nil) {
+            return 0
+        }
+        else if (searchField.text == "") {
             return moviesArray!.count
         }
         else {
-            return 0
+            return (movieSearchResultsArray == nil) ? 0 : movieSearchResultsArray!.count
         }
     }
     
@@ -80,14 +80,21 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
     }
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
-        // Load more if we're nearing the end of the list
-        if (indexPath.row > collectionView.numberOfItemsInSection(0) - 2) {
-            loadRottenTomatoesData()
+        // Load more if we're nearing the end of the list, unless it's displaying search results
+        if ((indexPath.row > collectionView.numberOfItemsInSection(0) - 2) && movieSearchResultsArray == nil) {
+            loadRottenTomatoesData(fetchMore: true)
         }
         
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("movieCollectionCell", forIndexPath: indexPath) as MovieCollectionViewCell
         
-        let movieDictionary = self.moviesArray![indexPath.row] as NSDictionary
+        var movieDictionary :NSDictionary
+        if (searchField.text == "") {
+            movieDictionary = self.moviesArray![indexPath.row] as NSDictionary
+        }
+        else {
+            movieDictionary = self.movieSearchResultsArray![indexPath.row] as NSDictionary
+        }
+        
         cell.movieNameLabel.text = movieDictionary["title"] as NSString
         cell.movieNameLabel.frame = CGRectMake(8,210,128,50)
         cell.movieNameLabel.numberOfLines = 0
@@ -149,31 +156,32 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
         }
     }
     
-    @IBAction func tapSearch(sender: AnyObject) {
-        println("tapped on search")
-        showSearchField()
+    func refresh() {
+        loadRottenTomatoesData(fetchMore: false)
     }
     
-    func loadRottenTomatoesData() {
+    func loadRottenTomatoesData(fetchMore :Bool = false) {
         let YourApiKey = "cvyj5jz6rkzkscxus99qwvay"
-    
         // Calculate the next page number
         var page = 1
         if (moviesArray != nil) {
-            page = moviesArray!.count/PAGE_LIMIT + 1
+            page = moviesArray!.count/PAGE_LIMIT
+        }
+        if fetchMore {
+            page = page + 1
         }
         
         let RottenTomatoesURLString = TOP_MOVIES_IN_THEATERS + "?apikey=" + YourApiKey + "&page_limit=" + String(PAGE_LIMIT) + "&page=" + String(page)
         let request = NSMutableURLRequest(URL: NSURL.URLWithString(RottenTomatoesURLString))
         
-        println("making the request \(request)")
+        println("making the request")
         self.hideErrorMessage()
         
         progressControl.hidden = false
         progressControl.startAnimating()
         progressControl.color = UIColor.blueColor()
         progressControl.frame = CGRectMake(self.view.frame.width/2-10, self.view.frame.height/2-10, 20, 20)
-
+        
         NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler:{ (response, data, error) in
             
             if (error != nil) {
@@ -187,7 +195,7 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
                 if parsedResult != nil {
                     let dictionary = parsedResult! as NSDictionary
                     if let newArray = dictionary["movies"] as? NSArray {
-                        if (self.moviesArray == nil) {
+                        if (self.moviesArray == nil || !fetchMore) {
                             self.moviesArray = newArray
                         }
                         else {
@@ -200,7 +208,7 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
                     println(self.moviesArray?.count)
                 }
             }
-
+            
             self.refreshControl.endRefreshing()
             self.progressControl.hidden = true
             // Removing the progress control from the view so that when you pull to refresh, there aren't 2 spinners.
@@ -209,11 +217,11 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
     }
     
     func showErrorMessage(message: String, fullscreen: Bool) {
-
+        
         errorLabel.text = message
         errorLabel.font = UIFont(name: "Avenir Next", size: 14.0)
         errorLabel.numberOfLines = 0
-
+        
         if (fullscreen) {
             errorLabel.textColor = UIColor.blackColor()
             errorLabel.textAlignment = NSTextAlignment.Center
@@ -224,7 +232,7 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
             errorLabel.frame = CGRectMake(10, 10, 300, 100)
             errorLabel.textColor = UIColor.whiteColor()
             errorLabel.sizeToFit()
-
+            
             errorView.layer.backgroundColor = UIColor.darkGrayColor().CGColor
             errorView.frame = CGRectMake(0, 64, self.view.frame.width, errorLabel.frame.height+20)
             errorView.layer.shadowRadius = 5.0
@@ -239,7 +247,7 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
     }
     
     func fadeInImageFromURL(imageView :UIImageView, url: NSURL) {
-      
+        
         let request = NSURLRequest(URL: url)
         
         imageView.setImageWithURLRequest(request, placeholderImage: nil, success: { (request, response, image) -> Void in
@@ -258,10 +266,7 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
     
     func showSearchField() {
         
-        searchView.frame = CGRectMake(0, 64, self.view.frame.width, self.view.frame.height)
-        searchView.backgroundColor = UIColor(white: 0.0, alpha: 0.8)
-        
-        searchBarView.frame = CGRectMake(0, 0, self.view.frame.width, 50)
+        searchBarView.frame = CGRectMake(0, 64, self.view.frame.width, 50)
         searchBarView.layer.backgroundColor = BG_GRAY.CGColor
         searchBarView.layer.shadowRadius = 5.0
         searchBarView.layer.shadowColor = UIColor.darkGrayColor().CGColor
@@ -272,23 +277,47 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
         searchField.font = UIFont(name: "Avenir Next", size: 14.0)
         searchField.placeholder = "Enter search term"
         searchField.autocorrectionType = UITextAutocorrectionType.No
-        searchField.returnKeyType = UIReturnKeyType.Search
-        searchField.becomeFirstResponder()
+        searchField.returnKeyType = UIReturnKeyType.Done
+        searchField.clearButtonMode = UITextFieldViewMode.Always
         searchField.delegate = self
-        
-        searchView.hidden = false
     }
     
-    func hideSearchField() {
-        
+    func hideKeyboard() {
         searchField.resignFirstResponder()
-        searchView.hidden = true
+    }
+    
+    func getSearchResults(searchTerm :String) -> NSArray? {
+        var resultsArray :NSArray?
+        if (moviesArray == nil) {
+            return nil
+        }
+        for movie in moviesArray! as [NSDictionary] {
+            let movieTitle = (movie["title"] as NSString).lowercaseString
+            
+            let wordsInTitle = movieTitle.componentsSeparatedByCharactersInSet(NSCharacterSet(charactersInString: " /-()"))
+            
+            for word in wordsInTitle {
+                if word.hasPrefix(searchTerm.lowercaseString) {
+                    if resultsArray == nil {
+                        resultsArray = NSArray(object: movie)
+                    }
+                    else {
+                        resultsArray = resultsArray?.arrayByAddingObject(movie)
+                    }
+                    break
+                }
+            }
+        }
+        return resultsArray
+    }
+    
+    func performSearch() {
+        self.movieSearchResultsArray = self.getSearchResults(searchField.text)        
+        moviesCollectionView.reloadData()
     }
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
-        println("user tapped return on search field: \(searchField.text)")
-        
-        hideSearchField()
+        hideKeyboard()
         return true
     }
 }
