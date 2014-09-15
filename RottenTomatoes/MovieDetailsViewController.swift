@@ -26,6 +26,8 @@ class MovieDetailsViewController: UIViewController {
         super.viewDidLoad()
         
         self.navigationItem.title = movieDictionary["title"] as NSString
+        //self.navigationController?.navigationBar.backgroundColor = UIColor(red: 255, green: 0, blue: 0, alpha: 0.5)
+        //self.navigationController?.navigationBar.translucent = true
         
         scrollView.scrollEnabled = true
         scrollView.contentSize = CGSize(width: 320,height: 1000)
@@ -38,7 +40,6 @@ class MovieDetailsViewController: UIViewController {
     
         let thumbnailURL = small_thumbnailURL.stringByReplacingOccurrencesOfString("_tmb.jpg", withString: "_ori.jpg", options: NSStringCompareOptions.LiteralSearch, range: nil)
         
-        //moviePosterImage.setImageWithURL(NSURL.URLWithString(thumbnailURL as NSString))
         let request = NSURLRequest(URL: NSURL.URLWithString(small_thumbnailURL as NSString))
 
         moviePosterImage.alpha = 0.0

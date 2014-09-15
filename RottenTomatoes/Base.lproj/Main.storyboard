@@ -86,9 +86,17 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" id="eUV-4t-PWV"/>
+                    <navigationItem key="navigationItem" id="eUV-4t-PWV">
+                        <nil key="title"/>
+                        <barButtonItem key="rightBarButtonItem" systemItem="search" id="GHd-JN-GOY">
+                            <connections>
+                                <action selector="tapSearch:" destination="Uy8-mG-jek" id="9S8-AS-Y3e"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="moviesCollectionView" destination="uwR-EJ-aXX" id="L6Y-fd-VRT"/>
+                        <outlet property="searchButton" destination="GHd-JN-GOY" id="aZ4-pN-p11"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uys-sN-eMW" userLabel="First Responder" sceneMemberID="firstResponder"/>

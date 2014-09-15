@@ -14,15 +14,19 @@ let TOP_MOVIES_IN_THEATERS = "http://api.rottentomatoes.com/api/public/v1.0/list
 let TOP_DVD = "http://api.rottentomatoes.com/api/public/v1.0/lists/dvds/top_rentals.json"
 let PAGE_LIMIT = 10
 
-class MoviesCollectionViewController: UIViewController, UICollectionViewDataSource {
+class MoviesCollectionViewController: UIViewController, UICollectionViewDataSource, UITextFieldDelegate {
     
     var moviesArray :NSArray?
     let refreshControl = UIRefreshControl()
     let progressControl = UIActivityIndicatorView()
     let errorLabel = UILabel()
     let errorView = UIView()
+    let searchView = UIView()
+    let searchBarView = UIView()
+    let searchField = UITextField()
     
     @IBOutlet weak var moviesCollectionView: UICollectionView!
+    @IBOutlet weak var searchButton: UIBarButtonItem!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,6 +42,12 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
         self.view.addSubview(errorView)
         errorView.hidden = true
 
+        // Initialize the search field
+        searchBarView.addSubview(searchField)
+        searchView.addSubview(searchBarView)
+        self.view.addSubview(searchView)
+        searchView.hidden = true
+        
         loadRottenTomatoesData()
         
         // Pull to refresh
@@ -137,6 +147,11 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
             let indexPath = self.moviesCollectionView.indexPathsForSelectedItems()[0] as NSIndexPath
             detailsViewController.movieDictionary = self.moviesArray![indexPath.row] as NSDictionary
         }
+    }
+    
+    @IBAction func tapSearch(sender: AnyObject) {
+        println("tapped on search")
+        showSearchField()
     }
     
     func loadRottenTomatoesData() {
@@ -239,5 +254,41 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
                 imageView.alpha = 1.0
             })
             }, failure: nil)
+    }
+    
+    func showSearchField() {
+        
+        searchView.frame = CGRectMake(0, 64, self.view.frame.width, self.view.frame.height)
+        searchView.backgroundColor = UIColor(white: 0.0, alpha: 0.8)
+        
+        searchBarView.frame = CGRectMake(0, 0, self.view.frame.width, 50)
+        searchBarView.layer.backgroundColor = BG_GRAY.CGColor
+        searchBarView.layer.shadowRadius = 5.0
+        searchBarView.layer.shadowColor = UIColor.darkGrayColor().CGColor
+        searchBarView.layer.shadowOpacity = 1.0
+        
+        searchField.frame = CGRectMake(10, 10, self.view.frame.width-20, 30)
+        searchField.borderStyle = UITextBorderStyle.RoundedRect
+        searchField.font = UIFont(name: "Avenir Next", size: 14.0)
+        searchField.placeholder = "Enter search term"
+        searchField.autocorrectionType = UITextAutocorrectionType.No
+        searchField.returnKeyType = UIReturnKeyType.Search
+        searchField.becomeFirstResponder()
+        searchField.delegate = self
+        
+        searchView.hidden = false
+    }
+    
+    func hideSearchField() {
+        
+        searchField.resignFirstResponder()
+        searchView.hidden = true
+    }
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        println("user tapped return on search field: \(searchField.text)")
+        
+        hideSearchField()
+        return true
     }
 }
