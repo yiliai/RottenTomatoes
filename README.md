@@ -27,7 +27,9 @@ Questions and Known Issues:
 Video Walkthroughs:
 
 Core experience
+
 ![Core experience](Screenshots/rottentomatoes_main.gif)
 
 Error messages
+
 ![Error messages](Screenshots/rottentomatoes_errors.gif)
