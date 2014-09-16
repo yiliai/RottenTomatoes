@@ -94,7 +94,7 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
         
         // Load more if we're nearing the end of the list, unless it's displaying search results
         if (!endOfList && (indexPath.row > collectionView.numberOfItemsInSection(0) - 2) && movieSearchResultsArray == nil) {
-            loadRottenTomatoesData(fetchMore: true)
+            loadRottenTomatoesData(refresh: false)
         }
         
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("movieCollectionCell", forIndexPath: indexPath) as MovieCollectionViewCell
@@ -211,19 +211,18 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
     }
 
     func refresh() {
-        loadRottenTomatoesData(fetchMore: false)
+        loadRottenTomatoesData(refresh: true)
     }
     
-    func loadRottenTomatoesData(fetchMore :Bool = false) {
+    // If refresh is set to false, then this will load the next page of the results.
+    // If refresh is set to true (by default), then this will refresh the current set of results
+    func loadRottenTomatoesData(refresh :Bool = true) {
         let YourApiKey = "cvyj5jz6rkzkscxus99qwvay"
         
         // Calculate the next page number
         var page = 1
-        if (moviesArray != nil) {
-            page = moviesArray!.count/PAGE_LIMIT
-        }
-        if fetchMore {
-            page = page + 1
+        if (moviesArray != nil && !refresh) {
+            page = moviesArray!.count/PAGE_LIMIT + 1
         }
         
         let RottenTomatoesURLString = self.query + "?apikey=" + YourApiKey + "&page_limit=" + String(PAGE_LIMIT) + "&page=" + String(page)
@@ -254,7 +253,7 @@ class MoviesCollectionViewController: UIViewController, UICollectionViewDataSour
                         if newArray.count < PAGE_LIMIT {
                             self.endOfList = true
                         }
-                        if (self.moviesArray == nil || !fetchMore) {
+                        if (self.moviesArray == nil || refresh) {
                             self.moviesArray = newArray
                         }
                         else {
