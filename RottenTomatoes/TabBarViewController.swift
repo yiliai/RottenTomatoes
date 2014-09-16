@@ -37,8 +37,6 @@ class TabBarViewController: UITabBarController, UITabBarControllerDelegate {
         for navController in self.childViewControllers as [UINavigationController] {
             navController.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont(name: "Avenir Next-Medium", size: 16)]
         }
-        
-        // Do any additional setup after loading the view.
     }
 
     override func didReceiveMemoryWarning() {

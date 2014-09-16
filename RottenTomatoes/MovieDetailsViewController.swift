@@ -17,7 +17,6 @@ class MovieDetailsViewController: UIViewController {
     @IBOutlet weak var movieRatingLabel: UILabel!
     @IBOutlet weak var movieSynopsisLabel: UILabel!
     
-    
     let GAP_FROM_TOP = CGFloat(400)
     
     var movieDictionary = NSDictionary()
@@ -25,11 +24,14 @@ class MovieDetailsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.navigationItem.title = movieDictionary["title"] as NSString
+        // Set the navigation bar title to be the title of the movie
+        if let movieTitle = movieDictionary["title"] as? NSString {
+            self.navigationItem.title = String(movieTitle)
+        }
         
+        // Set up the scroll view and the container view for the movie details
         scrollView.scrollEnabled = true
         scrollView.contentSize = CGSize(width: self.view.frame.width, height: self.view.frame.height)
-        
         movieCardView.backgroundColor = UIColor(white: 0.0, alpha: 0.8)
         movieCardView.frame = CGRectMake(0,GAP_FROM_TOP,self.view.frame.width,self.view.frame.height)
         
@@ -69,6 +71,7 @@ class MovieDetailsViewController: UIViewController {
         movieNameLabel.sizeToFit()
         h_offset += movieNameLabel.frame.height + PADDING
 
+        // Set movie rating
         if let ratings = movieDictionary["ratings"] as? NSDictionary {
             let critics_score = String(ratings["critics_score"] as NSInteger)
             let critics_rating = ratings["critics_rating"] as NSString
@@ -82,6 +85,7 @@ class MovieDetailsViewController: UIViewController {
             h_offset += movieRatingLabel.frame.height + PADDING
         }
         
+        // Set movie synopsis
         if let synopsis = movieDictionary["synopsis"] as? NSString {
             movieSynopsisLabel.text = synopsis
             movieSynopsisLabel.frame = CGRectMake(PADDING,h_offset,movieCardView.frame.width-2*PADDING,0)
@@ -89,11 +93,9 @@ class MovieDetailsViewController: UIViewController {
             movieSynopsisLabel.sizeToFit()
         }
         
+        // Recalculate the height of the description area and the scrollview content size
         let movieCardHeight = max(movieSynopsisLabel.frame.origin.y + movieSynopsisLabel.frame.height + PADDING, self.view.frame.height - GAP_FROM_TOP)
-        
         movieCardView.frame.size = CGSize(width: movieCardView.frame.width, height: movieCardHeight)
         scrollView.contentSize = CGSize(width: movieCardView.frame.width, height: movieCardView.frame.height + GAP_FROM_TOP)
-        
     }
-
 }
