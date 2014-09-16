@@ -23,6 +23,7 @@ Additonal things I tried to experiment with:
 Questions and Known Issues:
 * Since I created my CollectionViewController in storyboard, I'm not sure what the best way is to add the second tab. I created a new instance of the CollectionViewController in viewDidLoad of my TabBarViewController. It was weird to mix doing some things in storyboard and others programmatically.
 * I used setImageWithURLRequest to load the low res image first, and then load the high res image on success. However, I see that for some movies, the details view is immediately showing the high res image... and for some others, the low res image never gets updated to the high res one. I'm not sure if my network is just slow or I'm not quite doing this properly.
+* For the details page, I really don't like that the back button says "Back" or the main page title if there's room. But I couldn't figure out how to customize it so that it only has the back icon.
 
 Video Walkthroughs:
 
