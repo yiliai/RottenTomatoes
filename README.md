@@ -11,7 +11,7 @@ Completed user stories:
 * [x] Required: Pull down to refresh
 * [x] Optaionl: All images fade in
 * [x] Optional: Load low-res images first, and then switch to high-res when complete
-* [ ] All images should be cached in memory and disk.
+* [ ] Optional: All images should be cached in memory and disk.
 * [x] Optional: Customize the navigation bar
 * [x] Optional: Added a tab bar for Box Office and DVD
 * [x] Optional: Added search (local filter on the existing list)
